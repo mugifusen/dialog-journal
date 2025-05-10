@@ -1,15 +1,38 @@
-import {Button, Stack} from '@mui/material'
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { getScores, Score } from "../services/api";
+import { Container, Typography } from "@mui/material";
+import {
+    ResponsiveContainer,
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+  } from 'recharts';
 
-function Graph() {
-    const nav = useNavigate();
-    return (
-        <Stack spacing={2} alignItems='center' mt={4}>
-            <Button onClick={() => nav('/journal')}>ジャーナリング Start</Button>
-            <Button onClick={() => nav('records')}>記録集</Button>
-            <Button onClick={() => nav('graph')}>1習慣の感情推移</Button>
-        </Stack>
-    );
-}
+const Graph: React.FC = () => {
+  const [data, setData] = useState<Score[]>([]);
 
-export default Graph
+  useEffect(() => {
+    getScores().then(setData);
+  }, []);
+
+  return (
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>1週間の感情スコア</Typography>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="score" stroke="#1976d2" strokeWidth={3} />
+          
+        </LineChart>
+      </ResponsiveContainer>
+    </Container>
+  );
+};
+
+export default Graph;
