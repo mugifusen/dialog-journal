@@ -25,5 +25,5 @@
 
 ## システム構成図
 <p align="center">
-    <img src="fig/system_image.png" alt="システム構成図" width="800>
+  <img src="fig/system_image.png" alt="システム構成図" width="800" />
 </p>
