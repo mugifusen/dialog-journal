@@ -5,10 +5,10 @@ from typing import List
 from sqlalchemy.orm import Session
 from . import models, schemas
 from .deps import get_db
-from .database import SessionLocal, engine
+from .database import engine
 from .sentiment_BERT import EmotionAnalyzer
 
-# モデルのメタデータを初回のみ作成
+
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
@@ -46,8 +46,7 @@ def read_records(db: Session = Depends(get_db)):
 @app.get("/scores", response_model=List[schemas.ScoreResponse])
 def read_scores(db: Session = Depends(get_db)):
     entries = db.query(models.JournalEntry).order_by(models.JournalEntry.created_at.desc()).limit(7).all()
-    # 例：文字数／10 をスコアとする
-    return [{"date": e.created_at.date().isoformat(), "score": len(e.content) / 10} for e in reversed(entries)]
+    return [{"date": e.created_at.date().isoformat(), "score": e.sentiment_score} for e in reversed(entries)]
 
 
 @app.get('/ping')
